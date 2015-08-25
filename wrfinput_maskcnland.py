@@ -10,7 +10,7 @@ import matplotlib.path as mpath
 import netCDF4 as nc
 
 def inchina(latxy, lonxy):
-    POLYGONDIR_CANDIDATE = ['/home1/03081/zhenghui/soft/cnpolygon',
+    POLYGONDIR_CANDIDATE = [os.path.expandvars('$HOME/soft/cnpolygon'),
                             '/Volumes/Works/soft/cnpolygon']
     for POLYGONDIR in POLYGONDIR_CANDIDATE:
         if os.path.isdir(POLYGONDIR):
