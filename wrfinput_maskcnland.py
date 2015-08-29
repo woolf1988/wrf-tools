@@ -13,13 +13,13 @@ def inchina(lat, lon):
     lat = np.asarray(lat)
     lon = np.asarray(lon)
     POLYGONDIR_CANDIDATE = [os.path.expandvars('$HOME/soft/cnpolygon'),
-                            '/Volumes/Works/soft/cnpolygon']
+                            os.path.expandvars('$WORK/soft/cnpolygon')]
     for POLYGONDIR in POLYGONDIR_CANDIDATE:
         if os.path.isdir(POLYGONDIR):
             break
-    path_ml = mpath.Path(np.loadtxt(os.path.join(POLYGONDIR, 'china_mainland.txt')))
-    path_hn = mpath.Path(np.loadtxt(os.path.join(POLYGONDIR, 'china_hainan.txt')))
-    path_tw = mpath.Path(np.loadtxt(os.path.join(POLYGONDIR, 'china_taiwan.txt')))
+    path_ml = mpath.Path(np.loadtxt(os.path.join(POLYGONDIR, 'china_mainland_hi.txt')))
+    path_hn = mpath.Path(np.loadtxt(os.path.join(POLYGONDIR, 'china_hainan_hi.txt')))
+    path_tw = mpath.Path(np.loadtxt(os.path.join(POLYGONDIR, 'china_taiwan_hi.txt')))
     locs = np.column_stack((lon.ravel(), lat.ravel()))
     in_china = np.logical_or(np.logical_or(path_ml.contains_points(locs),
                                            path_hn.contains_points(locs)),
