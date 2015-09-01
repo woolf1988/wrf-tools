@@ -31,10 +31,22 @@ def main(wrfinput):
         latxy = ncf.variables['XLAT'][0,:,:]
         lonxy = ncf.variables['XLONG'][0,:,:]
         inchn = inchina(latxy, lonxy)
+        iswater = getattr(ncf, 'ISWATER')
+
         land = ncf.variables['LANDMASK'][0,:,:].astype('b')
         landinchn = np.logical_and(land, inchn)
         landinchn = landinchn.astype('f')
         ncf.variables['LANDMASK'][0,:,:] = landinchn[:]
+
+        isoilwater = getattr(ncf, 'ISOILWATER')
+        isltyp = ncf.variables['ISLTYP'][0,:,:]
+        isltyp[landinchn==0] = isoilwater
+        ncf.variables['ISLTYP'][0,:,:] = isltyp[:]
+
+        iswater = getattr(ncf, 'ISWATER')
+        ivgtyp = ncf.variables['IVGTYP'][0,:,:]
+        ivgtyp[landinchn==0] = iswater
+        ncf.variables['IVGTYP'][0,:,:] = ivgtyp[:]
     return
 
 import argparse
