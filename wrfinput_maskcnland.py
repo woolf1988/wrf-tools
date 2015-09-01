@@ -32,21 +32,38 @@ def main(wrfinput):
         lonxy = ncf.variables['XLONG'][0,:,:]
         inchn = inchina(latxy, lonxy)
         iswater = getattr(ncf, 'ISWATER')
-
-        land = ncf.variables['LANDMASK'][0,:,:].astype('b')
-        landinchn = np.logical_and(land, inchn)
-        landinchn = landinchn.astype('f')
-        ncf.variables['LANDMASK'][0,:,:] = landinchn[:]
-
         isoilwater = getattr(ncf, 'ISOILWATER')
+
+        land = ncf.variables['XLAND'][0,:,:].astype('i')
+        landinchn = np.logical_and(land==1, inchn)
+        nlandinchn = np.logical_not(landinchn)
+
+        land[nlandinchn] = 2.0
+        ncf.variables['XLAND'][0,:,:] = land[:]
+
+        landmask = ncf.variables['LANDMASK'][0,:,:]
+        landmask[nlandinchn] = 0.0
+        ncf.variables['LANDMASK'][0,:,:] = landmask[:]
+
+        lu_index = ncf.variables['LU_INDEX'][0,:,:]
+        lu_index[nlandinchn] = iswater
+        ncf.variables['LU_INDEX'][0,:,:] = lu_index
+
         isltyp = ncf.variables['ISLTYP'][0,:,:]
-        isltyp[landinchn==0] = isoilwater
+        isltyp[nlandinchn] = isoilwater
         ncf.variables['ISLTYP'][0,:,:] = isltyp[:]
 
-        iswater = getattr(ncf, 'ISWATER')
         ivgtyp = ncf.variables['IVGTYP'][0,:,:]
-        ivgtyp[landinchn==0] = iswater
+        ivgtyp[nlandinchn] = iswater
         ncf.variables['IVGTYP'][0,:,:] = ivgtyp[:]
+
+        hgt = ncf.variables['HGT'][0,:,:]
+        hgt[nlandinchn] = 0.0
+        ncf.variables['HGT'][0,:,:] = hgt
+
+        tmn = ncf.variables['TMN'][0,:,:]
+        sst = ncf.variables['SST'][0,:,:]
+        tmn[nlandinchn] = sst[nlandinchn]
     return
 
 import argparse
